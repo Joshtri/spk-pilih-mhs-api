@@ -5,7 +5,7 @@ import {
   findKelasById,
   updateKelas,
   deleteKelas,
-} from "../controllers/kelas.controller"; // Import controller kelas
+} from "../controllers/kelas.controller.js"; // Import controller kelas
 
 const kelasRoute = Router();
 

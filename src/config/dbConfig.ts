@@ -1,13 +1,13 @@
 /* eslint-disable no-undef */
 import { Sequelize } from "sequelize";
-// import { config } from "dotenv";
+import { config } from "dotenv";
 import mysql2 from "mysql2"; // Import mysql2 as ES module
 
-// config(); // Load environment variables
+config(); // Load environment variables
 
 // Define database configuration using environment variables with explicit types
 const db = new Sequelize({
-  username: process.env.DB_USER as string, 
+  username: process.env.DB_USER || 'root', 
   password: process.env.DB_PASS as string,           
   database: process.env.DB_NAME as string,           
   port: parseInt(process.env.DB_PORT as string, 10) || 3306, // Default MySQL port

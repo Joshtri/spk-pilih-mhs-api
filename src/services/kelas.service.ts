@@ -1,5 +1,5 @@
-import kelasRepository from "../repositories/kelas.repository";
-import { createKelasSchema, updateKelasSchema, idKelasSchema } from "../validations/kelas.validation";
+import kelasRepository from "../repositories/kelas.repository.js";
+import { createKelasSchema, updateKelasSchema, idKelasSchema } from "../validations/kelas.validation.js";
 
 /**
  * Handler untuk membuat kelas

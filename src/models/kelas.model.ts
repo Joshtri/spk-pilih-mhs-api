@@ -43,3 +43,15 @@ Kelas.init(
 );
 
 export default Kelas;
+
+
+
+// Singkronisasi dengan basis data
+(async () => {
+    try {
+        await db.sync();
+        console.log("kelas table has been created.");
+    } catch (error) {
+        console.error("Unable to create the table:", error);
+    }
+})();

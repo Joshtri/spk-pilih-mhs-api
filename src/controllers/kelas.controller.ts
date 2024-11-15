@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import kelasService from "../services/kelas.service";
+import kelasService from "../services/kelas.service.js";
 
 /**
  * Controller untuk membuat kelas baru
