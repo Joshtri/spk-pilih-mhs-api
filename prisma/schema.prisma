@@ -1,66 +1,79 @@
-  generator client {
-    provider = "prisma-client-js"
-  }
+generator client {
+  provider = "prisma-client-js"
+}
 
-  datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
-  }
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
 
-  model Siswa {
-    id           Int         @id @default(autoincrement())
-    nisn         String      @unique
-    nama         String
-    jenis_kelamin String
-    alamat       String
-    kelasId      Int
-    kelas        Kelas       @relation(fields: [kelasId], references: [id], onDelete: Cascade)
-    penilaian    Penilaian[]
-    hasil        Hasil[]
-  }
+model Siswa {
+  id           Int         @id @default(autoincrement())
+  nisn         String      @unique
+  nama         String
+  jenis_kelamin String
+  alamat       String
+  kelasId      Int
+  kelas        Kelas       @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+  penilaian    Penilaian[]
+  hasil        Hasil[]
+}
 
-  model Kelas {
-    id    Int     @id @default(autoincrement())
-    nama  String  @unique
-    siswa Siswa[]
-  }
+model Kelas {
+  id    Int     @id @default(autoincrement())
+  nama  String  @unique
+  siswa Siswa[]
+}
 
-  model User {
-    id       Int    @id @default(autoincrement())
-    nama     String
-    username String @unique
-    password String
-  }
+enum Role {
+  ADMIN
+  GURU
+}
 
-  model Kriteria {
-    id           Int           @id @default(autoincrement())
-    nama_kriteria String
-    jenis_kriteria        String
-    bobot_kriteria        Float
-    subKriteria  SubKriteria[] // Relasi one-to-many ke SubKriteria
-    penilaian    Penilaian[] // Relasi ke Penilaian
-  }
+model User {
+  id         Int      @id @default(autoincrement())
+  nama       String
+  username   String   @unique
+  email      String   @unique
+  password   String
+  nomorWa    String?  // Opsional
+  role       Role     @default(GURU) // Enum untuk role
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
 
-  model SubKriteria {
-    id              Int      @id @default(autoincrement())
-    nama_sub_kriteria String
-    kriteriaId      Int // Foreign key untuk Kriteria
-    kriteria        Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
-  }
 
-  model Penilaian {
-    id         Int      @id @default(autoincrement())
-    siswaId    Int
-    kriteriaId Int
-    nilai      Float
-    siswa      Siswa    @relation(fields: [siswaId], references: [id], onDelete: Cascade)
-    kriteria   Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
-  }
 
-  model Hasil {
-    id         Int   @id @default(autoincrement())
-    siswaId    Int
-    skor_akhir  Float
-    skor_normal Float
-    siswa      Siswa @relation(fields: [siswaId], references: [id], onDelete: Cascade)
-  }
+model Kriteria {
+  id           Int           @id @default(autoincrement())
+  nama_kriteria String
+  jenis_kriteria        String
+  bobot_kriteria        Float
+  subKriteria  SubKriteria[] // Relasi one-to-many ke SubKriteria
+  penilaian    Penilaian[] // Relasi ke Penilaian
+}
+
+model SubKriteria {
+  id              Int      @id @default(autoincrement())
+  nama_sub_kriteria String
+  bobot_sub_kriteria Float
+  kriteriaId      Int // Foreign key untuk Kriteria
+  kriteria        Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
+}
+
+model Penilaian {
+  id         Int      @id @default(autoincrement())
+  siswaId    Int
+  kriteriaId Int
+  nilai      Float
+  siswa      Siswa    @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  kriteria   Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
+}
+
+model Hasil {
+  id         Int   @id @default(autoincrement())
+  siswaId    Int
+  skor_akhir  Float
+  skor_normal Float
+  siswa      Siswa @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+}
