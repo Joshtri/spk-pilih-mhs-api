@@ -1,95 +1,145 @@
-import kelasRepository from "../repositories/kelas.repository.js";
-import { createKelasSchema, updateKelasSchema, idKelasSchema } from "../validations/kelas.validation.js";
+import { KelasRepository } from "../repositories/kelas.repository";
+import { Kelas } from "@prisma/client";
+import { Response } from "../interfaces/response.interface";
 
-/**
- * Handler untuk membuat kelas
- * @param data - Data kelas yang akan dibuat
- * @returns Kelas yang berhasil dibuat
- */
-async function createKelasHandler(data: any) {
-  // Validasi data menggunakan Joi
-  const { error, value } = createKelasSchema.validate(data);
+// Define the structure of the response
+// interface Response<T> {
+//   status: string;
+//   message: string;
+//   data?: T;
+//   error?: string;
+// }
 
-  if (error) {
-    throw new Error("Validation Error: " + error.details[0].message);
+export class KelasService {
+  private kelasRepo: KelasRepository;
+
+  constructor(kelasRepo: KelasRepository = new KelasRepository()) {
+    this.kelasRepo = kelasRepo;
   }
 
-  // Lanjutkan ke proses berikutnya jika data valid
-  const kelas = await kelasRepository.createKelas(value);
-  return kelas;
-}
-
-/**
- * Handler untuk mendapatkan semua kelas
- * @returns Daftar kelas
- */
-async function findAllKelasHandler() {
-  return kelasRepository.findAllKelas();
-}
-
-/**
- * Handler untuk mendapatkan kelas berdasarkan ID
- * @param id_kelas - ID kelas
- * @returns Kelas atau null jika tidak ditemukan
- */
-async function findKelasByIdHandler(id_kelas: number) {
-  // Validasi ID kelas
-  const { error } = idKelasSchema.validate({ id_kelas });
-
-  if (error) {
-    throw new Error("Validation Error: " + error.details[0].message);
+  // Fetch all classes
+  async getAllKelas(): Promise<Response<Kelas[]>> {
+    try {
+      const classes = await this.kelasRepo.getAllKelas();
+      return {
+        status: "success",
+        message: "Data kelas berhasil diambil.",
+        data: classes,
+      };
+    } catch (error: any) {
+      return {
+        status: "error",
+        message: "Gagal mengambil data kelas.",
+        error: error.message,
+      };
+    }
   }
 
-  const kelas = await kelasRepository.findKelasById(id_kelas);
-  return kelas;
-}
+  // Get a single class by ID
+  async getKelasById(id: number): Promise<Response<Kelas>> {
+    try {
+      const kelas = await this.kelasRepo.getKelasById(id);
 
-/**
- * Handler untuk memperbarui kelas berdasarkan ID
- * @param id_kelas - ID kelas
- * @param data - Data kelas yang ingin diperbarui
- * @returns Kelas yang diperbarui atau null jika tidak ditemukan
- */
-async function updateKelasHandler(id_kelas: number, data: any) {
-  // Validasi ID kelas
-  const { error: idError } = idKelasSchema.validate({ id_kelas });
+      if (!kelas) {
+        return {
+          status: "error",
+          message: `Kelas dengan ID ${id} tidak ditemukan.`,
+        };
+      }
 
-  if (idError) {
-    throw new Error("Validation Error: " + idError.details[0].message);
+      return {
+        status: "success",
+        message: "Data kelas berhasil ditemukan.",
+        data: kelas,
+      };
+    } catch (error: any) {
+      return {
+        status: "error",
+        message: "Gagal mengambil data kelas.",
+        error: error.message,
+      };
+    }
   }
 
-  // Validasi data kelas untuk pembaruan
-  const { error } = updateKelasSchema.validate(data);
+  // Create a new class
+  async createKelas(nama: string): Promise<Response<Kelas>> {
+    try {
+      // Check if the class name already exists
+      const existingClasses = await this.kelasRepo.getAllKelas();
+      if (existingClasses.some((kelas) => kelas.nama === nama)) {
+        return {
+          status: "error",
+          message: `Kelas dengan nama "${nama}" sudah ada.`,
+        };
+      }
 
-  if (error) {
-    throw new Error("Validation Error: " + error.details[0].message);
+      const newClass = await this.kelasRepo.createKelas(nama);
+      return {
+        status: "success",
+        message: "Kelas baru berhasil dibuat.",
+        data: newClass,
+      };
+    } catch (error: any) {
+      return {
+        status: "error",
+        message: "Gagal membuat kelas baru.",
+        error: error.message,
+      };
+    }
   }
 
-  const updatedKelas = await kelasRepository.updateKelas(id_kelas, data);
-  return updatedKelas;
-}
+  // Update an existing class
+  async updateKelas(id: number, nama: string): Promise<Response<Kelas>> {
+    try {
+      // Check if the class exists
+      const existingClass = await this.kelasRepo.getKelasById(id);
 
-/**
- * Handler untuk menghapus kelas berdasarkan ID
- * @param id_kelas - ID kelas
- * @returns Status penghapusan kelas
- */
-async function deleteKelasHandler(id_kelas: number) {
-  // Validasi ID kelas
-  const { error } = idKelasSchema.validate({ id_kelas });
+      if (!existingClass) {
+        return {
+          status: "error",
+          message: `Kelas dengan ID ${id} tidak ditemukan.`,
+        };
+      }
 
-  if (error) {
-    throw new Error("Validation Error: " + error.details[0].message);
+      const updatedClass = await this.kelasRepo.updateKelas(id, nama);
+      return {
+        status: "success",
+        message: "Data kelas berhasil diperbarui.",
+        data: updatedClass,
+      };
+    } catch (error: any) {
+      return {
+        status: "error",
+        message: "Gagal memperbarui data kelas.",
+        error: error.message,
+      };
+    }
   }
 
-  const deleted = await kelasRepository.deleteKelas(id_kelas);
-  return deleted;
-}
+  // Delete a class
+  async deleteKelas(id: number): Promise<Response<null>> {
+    try {
+      // Check if the class exists
+      const existingClass = await this.kelasRepo.getKelasById(id);
 
-export default {
-  createKelasHandler,
-  findAllKelasHandler,
-  findKelasByIdHandler,
-  updateKelasHandler,
-  deleteKelasHandler,
-};
+      if (!existingClass) {
+        return {
+          status: "error",
+          message: `Kelas dengan ID ${id} tidak ditemukan.`,
+        };
+      }
+
+      await this.kelasRepo.deleteKelas(id);
+      return {
+        status: "success",
+        message: "Kelas berhasil dihapus.",
+      };
+    } catch (error: any) {
+      return {
+        status: "error",
+        message: "Gagal menghapus kelas.",
+        error: error.message,
+      };
+    }
+  }
+}
