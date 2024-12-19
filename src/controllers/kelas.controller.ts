@@ -1,72 +1,105 @@
-import type { Request, Response } from "express";
-import kelasService from "../services/kelas.service.js";
+import { Request, Response } from "express";
+import { KelasService } from "../services/kelas.service";
 
-/**
- * Controller untuk membuat kelas baru
- */
-export const createKelas = async (req: Request, res: Response) : Promise<void> => {
-  try {
-    const data = req.body;
-    const result = await kelasService.createKelasHandler(data);
-    res.status(201).json(result);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
+export class KelasController {
+  private kelasService: KelasService;
+
+  constructor() {
+    this.kelasService = new KelasService();
   }
-};
 
-/**
- * Controller untuk mendapatkan semua kelas
- */
-export const findAllKelas = async (req: Request, res: Response) : Promise<void> => {
-  try {
-    const result = await kelasService.findAllKelasHandler();
-    res.status(200).json(result);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-/**
- * Controller untuk mendapatkan kelas berdasarkan ID
- */
-export const findKelasById = async (req: Request, res: Response) : Promise<void> => {
-  try {
-    const { id_kelas } = req.params;
-    const result = await kelasService.findKelasByIdHandler(Number(id_kelas));
-
-    if (result) {
-        res.status(200).json(result);
-    } else {
-        res.status(404).json({ message: "Kelas not found" });
+  // Handler to fetch all classes
+  async getAllKelas(req: Request, res: Response): Promise<Response> {
+    try {
+      const result = await this.kelasService.getAllKelas();
+      return res.status(200).json(result);
+    } catch (error: any) {
+      return res.status(500).json({
+        status: "error",
+        message: "Terjadi kesalahan saat mengambil data kelas.",
+        error: error.message,
+      });
     }
-  } catch (error: any) {
-        res.status(400).json({ error: error.message });
   }
-};
 
-/**
- * Controller untuk memperbarui kelas
- */
-export const updateKelas = async (req: Request, res: Response) => {
-  try {
-    const { id_kelas } = req.params;
-    const data = req.body;
-    const result = await kelasService.updateKelasHandler(Number(id_kelas), data);
-    res.status(200).json(result);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
-};
+  // Handler to get a class by ID
+  async getKelasById(req: Request, res: Response): Promise<Response> {
+    try {
+      const id = parseInt(req.params.id); // Parse ID from URL params
+      const result = await this.kelasService.getKelasById(id);
 
-/**
- * Controller untuk menghapus kelas berdasarkan ID
- */
-export const deleteKelas = async (req: Request, res: Response) : Promise<void> => {
-  try {
-    const { id_kelas } = req.params;
-    const result = await kelasService.deleteKelasHandler(Number(id_kelas));
-    res.status(200).json({ message: "Kelas deleted successfully", deleted: result });
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
+      if (result.status === "error") {
+        return res.status(404).json(result); // Return 404 if not found
+      }
+
+      return res.status(200).json(result);
+    } catch (error: any) {
+      return res.status(500).json({
+        status: "error",
+        message: "Terjadi kesalahan saat mengambil data kelas.",
+        error: error.message,
+      });
+    }
   }
-};
+
+  // Handler to create a new class
+  async createKelas(req: Request, res: Response): Promise<Response> {
+    try {
+      const { nama } = req.body; // Get 'nama' from request body
+      const result = await this.kelasService.createKelas(nama);
+
+      if (result.status === "error") {
+        return res.status(400).json(result); // Return 400 if validation fails
+      }
+
+      return res.status(201).json(result); // Return 201 for successful creation
+    } catch (error: any) {
+      return res.status(500).json({
+        status: "error",
+        message: "Terjadi kesalahan saat membuat kelas baru.",
+        error: error.message,
+      });
+    }
+  }
+
+  // Handler to update an existing class
+  async updateKelas(req: Request, res: Response): Promise<Response> {
+    try {
+      const id = parseInt(req.params.id); // Parse ID from URL params
+      const { nama } = req.body; // Get 'nama' from request body
+      const result = await this.kelasService.updateKelas(id, nama);
+
+      if (result.status === "error") {
+        return res.status(404).json(result); // Return 404 if not found
+      }
+
+      return res.status(200).json(result); // Return 200 for successful update
+    } catch (error: any) {
+      return res.status(500).json({
+        status: "error",
+        message: "Terjadi kesalahan saat memperbarui data kelas.",
+        error: error.message,
+      });
+    }
+  }
+
+  // Handler to delete a class
+  async deleteKelas(req: Request, res: Response): Promise<Response> {
+    try {
+      const id = parseInt(req.params.id); // Parse ID from URL params
+      const result = await this.kelasService.deleteKelas(id);
+
+      if (result.status === "error") {
+        return res.status(404).json(result); // Return 404 if not found
+      }
+
+      return res.status(200).json(result); // Return 200 for successful deletion
+    } catch (error: any) {
+      return res.status(500).json({
+        status: "error",
+        message: "Terjadi kesalahan saat menghapus data kelas.",
+        error: error.message,
+      });
+    }
+  }
+}
