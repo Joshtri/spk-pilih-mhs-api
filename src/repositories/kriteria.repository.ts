@@ -1,11 +1,16 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { PrismaClient , Kriteria} from "@prisma/client";
+// import { Kriteria } from "../types/kriteria.type"; // Impor tipe Kriteria
 
 export class KriteriaRepository {
+
+    private prisma: PrismaClient;
+
+    constructor(){
+        this.prisma = new PrismaClient();
+    }
   // Fetch all criteria
   async getAllKriteria() {
-    return await prisma.kriteria.findMany({
+    return await this.prisma.kriteria.findMany({
       include: {
         penilaian: true, // Include related Penilaian data
       },
@@ -14,7 +19,7 @@ export class KriteriaRepository {
 
   // Get a single criterion by ID
   async getKriteriaById(id: number) {
-    return await prisma.kriteria.findUnique({
+    return await this.prisma.kriteria.findUnique({
       where: {
         id,
       },
@@ -25,18 +30,18 @@ export class KriteriaRepository {
   }
 
   // Create a new criterion
-  async createKriteria(data: { nama: string; jenis: string; bobot: number }) {
-    return await prisma.kriteria.create({
-      data,
-    });
+  async createKriteria(data: Omit<Kriteria, 'id'>) { // Menggunakan tipe Kriteria
+    return await this.prisma.kriteria.create({
+        data,
+      });
   }
 
   // Update an existing criterion
   async updateKriteria(
     id: number,
-    data: { nama?: string; jenis?: string; bobot?: number }
+    data: Partial<Kriteria> // Menggunakan Partial<Kriteria> untuk data opsional
   ) {
-    return await prisma.kriteria.update({
+    return await this.prisma.kriteria.update({
       where: {
         id,
       },
@@ -46,11 +51,10 @@ export class KriteriaRepository {
 
   // Delete a criterion
   async deleteKriteria(id: number) {
-    return await prisma.kriteria.delete({
+    return await this.prisma.kriteria.delete({
       where: {
         id,
       },
     });
   }
 }
-
