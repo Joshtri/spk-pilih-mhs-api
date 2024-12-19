@@ -7,7 +7,7 @@ import kelasRoute from './routes/kelas.route.js';
 
 const app = express();
 const PORT = process.env.APP_PORT || 3000;
-
+    
 
 // Middleware to parse JSON
 app.use(express.json());
@@ -20,7 +20,7 @@ app.use(cors({
 
 
 
-app.use('/api',kelasRoute)
+// app.use('/api',kelasRoute)
 
 // Basic route to check server status
 app.get('/', (req: Request, res: Response) => {

@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Siswa {
+  id           Int       @id @default(autoincrement())
+  nisn         String    @unique // Ensures NISN is unique
+  nama         String
+  jenisKelamin String
+  alamat       String
+  kelasId      Int
+  kelas        Kelas     @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+  penilaian    Penilaian[]
+  hasil        Hasil[]
+}
+
+model Kelas {
+  id      Int      @id @default(autoincrement())
+  nama    String   @unique // Unique class name, e.g., "X IPA 1"
+  siswa   Siswa[]
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  nama     String
+  username String @unique
+  password String
+}
+
+model Kriteria {
+  id         Int       @id @default(autoincrement())
+  nama       String
+  jenis      String // benefit or cost
+  bobot      Float
+  penilaian  Penilaian[]
+}
+
+model Penilaian {
+  id          Int       @id @default(autoincrement())
+  siswaId     Int
+  kriteriaId  Int
+  nilai       Float
+  siswa       Siswa     @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  kriteria    Kriteria  @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
+}
+
+model Hasil {
+  id          Int   @id @default(autoincrement())
+  siswaId     Int
+  skorAkhir   Float
+  skorNormal  Float
+  siswa       Siswa @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+}
