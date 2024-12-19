@@ -1,27 +1,28 @@
-import { Router } from "express";
-import {
-  createKelas,
-  findAllKelas,
-  findKelasById,
-  updateKelas,
-  deleteKelas,
-} from "../controllers/kelas.controller.js"; // Import controller kelas
+import { Router, Request, Response } from "express";
+import { KelasController } from "../controllers/kelas.controller";
 
 const kelasRoute = Router();
+const kelasController = new KelasController();
 
-// Route untuk membuat kelas baru
-kelasRoute.post("/kelas", createKelas);
+// Define routes for Kelas
+kelasRoute.get("/kelas", async (req: Request, res: Response) => {
+  await kelasController.getAllKelas(req, res);
+});
 
-// Route untuk mendapatkan semua kelas
-kelasRoute.get("/kelas", findAllKelas);
+kelasRoute.get("/kelas/:id", async (req: Request, res: Response) => {
+  await kelasController.getKelasById(req, res);
+});
 
-// Route untuk mendapatkan kelas berdasarkan ID
-kelasRoute.get("/kelas/:id_kelas", findKelasById);
+kelasRoute.post("/kelas", async (req: Request, res: Response) => {
+  await kelasController.createKelas(req, res);
+});
 
-// Route untuk memperbarui kelas berdasarkan ID
-kelasRoute.put("/kelas/:id_kelas", updateKelas);
+kelasRoute.put("/kelas/:id", async (req: Request, res: Response) => {
+  await kelasController.updateKelas(req, res);
+});
 
-// Route untuk menghapus kelas berdasarkan ID
-kelasRoute.delete("/kelas/:id_kelas", deleteKelas);
+kelasRoute.delete("/kelas/:id", async (req: Request, res: Response) => {
+  await kelasController.deleteKelas(req, res);
+});
 
 export default kelasRoute;
