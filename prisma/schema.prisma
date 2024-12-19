@@ -8,21 +8,21 @@ datasource db {
 }
 
 model Siswa {
-  id           Int       @id @default(autoincrement())
-  nisn         String    @unique // Ensures NISN is unique
+  id           Int         @id @default(autoincrement())
+  nisn         String      @unique
   nama         String
   jenisKelamin String
   alamat       String
   kelasId      Int
-  kelas        Kelas     @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+  kelas        Kelas       @relation(fields: [kelasId], references: [id], onDelete: Cascade)
   penilaian    Penilaian[]
   hasil        Hasil[]
 }
 
 model Kelas {
-  id      Int      @id @default(autoincrement())
-  nama    String   @unique // Unique class name, e.g., "X IPA 1"
-  siswa   Siswa[]
+  id    Int     @id @default(autoincrement())
+  nama  String  @unique
+  siswa Siswa[]
 }
 
 model Admin {
@@ -33,26 +33,34 @@ model Admin {
 }
 
 model Kriteria {
-  id         Int       @id @default(autoincrement())
-  nama       String
-  jenis      String // benefit or cost
-  bobot      Float
-  penilaian  Penilaian[]
+  id           Int           @id @default(autoincrement())
+  namaKriteria String
+  jenis        String
+  bobotKriteria        Float
+  subKriteria  SubKriteria[] // Relasi one-to-many ke SubKriteria
+  penilaian    Penilaian[] // Relasi ke Penilaian
+}
+
+model SubKriteria {
+  id              Int      @id @default(autoincrement())
+  namaSubKriteria String
+  kriteriaId      Int // Foreign key untuk Kriteria
+  kriteria        Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
 }
 
 model Penilaian {
-  id          Int       @id @default(autoincrement())
-  siswaId     Int
-  kriteriaId  Int
-  nilai       Float
-  siswa       Siswa     @relation(fields: [siswaId], references: [id], onDelete: Cascade)
-  kriteria    Kriteria  @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
+  id         Int      @id @default(autoincrement())
+  siswaId    Int
+  kriteriaId Int
+  nilai      Float
+  siswa      Siswa    @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  kriteria   Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
 }
 
 model Hasil {
-  id          Int   @id @default(autoincrement())
-  siswaId     Int
-  skorAkhir   Float
-  skorNormal  Float
-  siswa       Siswa @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  id         Int   @id @default(autoincrement())
+  siswaId    Int
+  skorAkhir  Float
+  skorNormal Float
+  siswa      Siswa @relation(fields: [siswaId], references: [id], onDelete: Cascade)
 }
