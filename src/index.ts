@@ -1,9 +1,9 @@
 import express from 'express';
 import type { Request, Response } from 'express';
 import cors from 'cors'
+import kelasRoute from './routes/kelas.route';
 
 
-import kelasRoute from './routes/kelas.route.js';
 
 const app = express();
 const PORT = process.env.APP_PORT || 3000;
@@ -20,7 +20,7 @@ app.use(cors({
 
 
 
-// app.use('/api',kelasRoute)
+app.use('/api',kelasRoute)
 
 // Basic route to check server status
 app.get('/', (req: Request, res: Response) => {
