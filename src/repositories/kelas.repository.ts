@@ -1,11 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
 
 export class KelasRepository {
+
+  private prisma: PrismaClient;
+
+  constructor(){
+      this.prisma = new PrismaClient();
+  }
   // Fetch all classes
   async getAllKelas() {
-    return await prisma.kelas.findMany({
+    return await this.prisma.kelas.findMany({
       include: {
         siswa: true, // Include associated students
       },
@@ -14,7 +19,7 @@ export class KelasRepository {
 
   // Get a single class by ID
   async getKelasById(id: number) {
-    return await prisma.kelas.findUnique({
+    return await this.prisma.kelas.findUnique({
       where: {
         id,
       },
@@ -26,7 +31,7 @@ export class KelasRepository {
 
   // Create a new class
   async createKelas(nama: string) {
-    return await prisma.kelas.create({
+    return await this.prisma.kelas.create({
       data: {
         nama,
       },
@@ -35,7 +40,7 @@ export class KelasRepository {
 
   // Update an existing class
   async updateKelas(id: number, nama: string) {
-    return await prisma.kelas.update({
+    return await this.prisma.kelas.update({
       where: {
         id,
       },
@@ -47,7 +52,7 @@ export class KelasRepository {
 
   // Delete a class
   async deleteKelas(id: number) {
-    return await prisma.kelas.delete({
+    return await this.prisma.kelas.delete({
       where: {
         id,
       },
