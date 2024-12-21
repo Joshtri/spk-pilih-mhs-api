@@ -62,7 +62,7 @@ export class SiswaService {
   }
 
   // Create a new student
-  async createSiswa(data: { nisn: string; nama: string; jenisKelamin: string; alamat: string; kelasId: number }): Promise<Response<Siswa>> {
+  async createSiswa(data: { nisn: string; nama: string; jenis_kelamin: string; alamat: string; kelasId: number }): Promise<Response<Siswa>> {
     try {
       // Check if NISN is already used
       const existingStudents = await this.siswaRepo.getAllSiswa();
