@@ -45,11 +45,11 @@ export class SiswaController {
   // Handler to create a new student
   async createSiswa(req: Request, res: Response): Promise<Response> {
     try {
-      const { nisn, nama, jenisKelamin, alamat, kelasId } = req.body;
+      const { nisn, nama, jenis_kelamin, alamat, kelasId } = req.body;
       const result = await this.siswaService.createSiswa({
         nisn,
         nama,
-        jenisKelamin,
+        jenis_kelamin,
         alamat,
         kelasId,
       });
@@ -72,12 +72,12 @@ export class SiswaController {
   async updateSiswa(req: Request, res: Response): Promise<Response> {
     try {
       const id = parseInt(req.params.id); // Parse ID from URL params
-      const { nisn, nama, jenisKelamin, alamat, kelasId } = req.body;
+      const { nisn, nama, jenis_kelamin, alamat, kelasId } = req.body;
 
       const result = await this.siswaService.updateSiswa(id, {
         nisn,
         nama,
-        jenisKelamin,
+        jenis_kelamin,
         alamat,
         kelasId,
       });
