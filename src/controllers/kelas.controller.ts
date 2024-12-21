@@ -43,9 +43,20 @@ export class KelasController {
   }
 
   // Handler to create a new class
+  // Handler to create a new class
   async createKelas(req: Request, res: Response): Promise<Response> {
     try {
       const { nama_kelas } = req.body; // Get 'nama_kelas' from request body
+
+      // Validate request body
+      if (!nama_kelas || typeof nama_kelas !== "string" || nama_kelas.trim() === "") {
+        return res.status(400).json({
+          status: "error",
+          message: "Nama kelas tidak valid. Pastikan nama_kelas berupa string dan tidak kosong.",
+        });
+      }
+
+      // Call the service to create the class
       const result = await this.kelasService.createKelas(nama_kelas);
 
       if (result.status === "error") {
@@ -54,6 +65,7 @@ export class KelasController {
 
       return res.status(201).json(result); // Return 201 for successful creation
     } catch (error: any) {
+      console.error("[CONTROLLER] Error creating Kelas:", error.message);
       return res.status(500).json({
         status: "error",
         message: "Terjadi kesalahan saat membuat kelas baru.",
@@ -61,6 +73,7 @@ export class KelasController {
       });
     }
   }
+
 
   // Handler to update an existing class
   async updateKelas(req: Request, res: Response): Promise<Response> {
