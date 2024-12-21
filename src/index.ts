@@ -2,6 +2,8 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import cors from 'cors'
 import kelasRoute from './routes/kelas.route';
+import kriteriaRoute from './routes/kriteria.route';
+import siswaRoute from './routes/siswa.route';
 
 
 
@@ -14,13 +16,13 @@ app.use(express.json());
 
 app.use(cors({
     origin: "*",
-    methods:["GET", "POST"],
+    methods:["GET", "POST", "DELETE", "PUT"],
     credentials:true
 }));
 
 
 
-app.use('/api',kelasRoute)
+app.use('/api/v1',kelasRoute,kriteriaRoute, siswaRoute)
 
 // Basic route to check server status
 app.get('/', (req: Request, res: Response) => {
