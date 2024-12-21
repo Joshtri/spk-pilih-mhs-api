@@ -9,20 +9,20 @@ import siswaRoute from './routes/siswa.route';
 
 const app = express();
 const PORT = process.env.APP_PORT || 3000;
-    
+
 
 // Middleware to parse JSON
 app.use(express.json());
 
 app.use(cors({
     origin: "*",
-    methods:["GET", "POST", "DELETE", "PUT"],
-    credentials:true
+    methods: ["GET", "POST", "DELETE", "PUT"],
+    credentials: true
 }));
 
 
 
-app.use('/api/v1',kelasRoute,kriteriaRoute, siswaRoute)
+app.use('/api/v1', kelasRoute, kriteriaRoute, siswaRoute)
 
 // Basic route to check server status
 app.get('/', (req: Request, res: Response) => {
