@@ -30,10 +30,11 @@ export class KriteriaRepository {
   }
 
   // Create a new criterion
-  async createKriteria(data: Omit<Kriteria, 'id'>) { // Menggunakan tipe Kriteria
+  // Repository to handle database operations
+  async createKriteria(data: { nama_kriteria: string; jenis_kriteria: string; bobot_kriteria: number }) {
     return await this.prisma.kriteria.create({
-        data,
-      });
+      data,
+    });
   }
 
   // Update an existing criterion
