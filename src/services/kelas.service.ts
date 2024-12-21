@@ -62,18 +62,18 @@ export class KelasService {
   }
 
   // Create a new class
-  async createKelas(nama: string): Promise<Response<Kelas>> {
+  async createKelas(nama_kelas: string): Promise<Response<Kelas>> {
     try {
       // Check if the class name already exists
       const existingClasses = await this.kelasRepo.getAllKelas();
-      if (existingClasses.some((kelas) => kelas.nama === nama)) {
+      if (existingClasses.some((kelas) => kelas.nama_kelas === nama_kelas)) {
         return {
           status: "error",
-          message: `Kelas dengan nama "${nama}" sudah ada.`,
+          message: `Kelas dengan nama_kelas "${nama_kelas}" sudah ada.`,
         };
       }
 
-      const newClass = await this.kelasRepo.createKelas(nama);
+      const newClass = await this.kelasRepo.createKelas(nama_kelas);
       return {
         status: "success",
         message: "Kelas baru berhasil dibuat.",
@@ -89,7 +89,7 @@ export class KelasService {
   }
 
   // Update an existing class
-  async updateKelas(id: number, nama: string): Promise<Response<Kelas>> {
+  async updateKelas(id: number, nama_kelas: string): Promise<Response<Kelas>> {
     try {
       // Check if the class exists
       const existingClass = await this.kelasRepo.getKelasById(id);
@@ -101,7 +101,7 @@ export class KelasService {
         };
       }
 
-      const updatedClass = await this.kelasRepo.updateKelas(id, nama);
+      const updatedClass = await this.kelasRepo.updateKelas(id, nama_kelas);
       return {
         status: "success",
         message: "Data kelas berhasil diperbarui.",
