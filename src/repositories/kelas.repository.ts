@@ -30,22 +30,22 @@ export class KelasRepository {
   }
 
   // Create a new class
-  async createKelas(nama: string) {
+  async createKelas(nama_kelas: string) {
     return await this.prisma.kelas.create({
       data: {
-        nama,
+        nama_kelas,
       },
     });
   }
 
   // Update an existing class
-  async updateKelas(id: number, nama: string) {
+  async updateKelas(id: number, nama_kelas: string) {
     return await this.prisma.kelas.update({
       where: {
         id,
       },
       data: {
-        nama,
+        nama_kelas,
       },
     });
   }
