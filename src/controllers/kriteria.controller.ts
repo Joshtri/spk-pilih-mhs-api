@@ -43,30 +43,47 @@ export class KriteriaController {
   }
 
   // Handler to create a new criterion
-  async createKriteria(req: Request, res: Response): Promise<Response> {
-    try {
-      const { nama_kriteria, jenis_kriteria, bobot_kriteria } = req.body;
+// Handler to create a new criterion
+async createKriteria(req: Request, res: Response) {
+  const { nama_kriteria, bobot_kriteria, jenis_kriteria } = req.body;
 
-      // Data langsung diteruskan ke service tanpa perlu mapping karena sesuai dengan model Prisma
-      const result = await this.kriteriaService.createKriteria({
-        nama_kriteria,
-        jenis_kriteria,
-        bobot_kriteria,
-      });
-
-      if (result.status === "error") {
-        return res.status(400).json(result);
-      }
-
-      return res.status(201).json(result);
-    } catch (error: any) {
-      return res.status(500).json({
-        status: "error",
-        message: "Terjadi kesalahan saat membuat kriteria.",
-        error: error.message,
-      });
-    }
+  // Validasi input
+  if (!nama_kriteria || !bobot_kriteria || !jenis_kriteria) {
+    return res.status(400).json({
+      status: "error",
+      message: "Semua field harus diisi.",
+    });
   }
+
+  if (typeof bobot_kriteria !== "number" || bobot_kriteria < 0 || bobot_kriteria > 100) {
+    return res.status(400).json({
+      status: "error",
+      message: "Bobot kriteria harus berupa angka antara 0 dan 100.",
+    });
+  }
+
+  try {
+    const newKriteria = await this.kriteriaService.createKriteria({
+      nama_kriteria,
+      bobot_kriteria: bobot_kriteria / 100, // Konversi ke skala 0-1
+      jenis_kriteria,
+    });
+
+    return res.status(201).json({
+      status: "success",
+      message: "Kriteria berhasil dibuat.",
+      data: newKriteria,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: "error",
+      message: "Gagal membuat kriteria.",
+      error: error.message,
+    });
+  }
+}
+
+
 
   // Handler to update an existing criterion
   async updateKriteria(req: Request, res: Response): Promise<Response> {
