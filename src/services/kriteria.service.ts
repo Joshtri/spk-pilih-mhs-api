@@ -54,22 +54,16 @@ export class KriteriaService {
   }
 
   // Create a new criterion
-  async createKriteria(data: { nama_kriteria: string; jenis_kriteria: string; bobot_kriteria: number }): Promise<Response<Kriteria>> {
+  // Service to handle business logic
+  async createKriteria(data: { nama_kriteria: string; jenis_kriteria: string; bobot_kriteria: number }) {
     try {
-      const newCriterion = await this.kriteriaRepo.createKriteria(data);
-      return {
-        status: "success",
-        message: "Kriteria baru berhasil dibuat.",
-        data: newCriterion,
-      };
+      const newKriteria = await this.kriteriaRepo.createKriteria(data);
+      return newKriteria;
     } catch (error: any) {
-      return {
-        status: "error",
-        message: "Gagal membuat kriteria baru.",
-        error: error.message,
-      };
+      throw new Error(error.message);
     }
   }
+
 
   // Update an existing criterion
   async updateKriteria(
