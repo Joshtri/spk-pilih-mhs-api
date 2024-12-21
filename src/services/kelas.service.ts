@@ -62,31 +62,43 @@ export class KelasService {
   }
 
   // Create a new class
-  async createKelas(nama_kelas: string): Promise<Response<Kelas>> {
-    try {
-      // Check if the class name already exists
-      const existingClasses = await this.kelasRepo.getAllKelas();
-      if (existingClasses.some((kelas) => kelas.nama_kelas === nama_kelas)) {
-        return {
-          status: "error",
-          message: `Kelas dengan nama_kelas "${nama_kelas}" sudah ada.`,
-        };
-      }
-
-      const newClass = await this.kelasRepo.createKelas(nama_kelas);
-      return {
-        status: "success",
-        message: "Kelas baru berhasil dibuat.",
-        data: newClass,
-      };
-    } catch (error: any) {
+// Service to create a new class
+async createKelas(nama_kelas: string): Promise<Response<Kelas>> {
+  try {
+    // Validate input
+    if (!nama_kelas || typeof nama_kelas !== "string" || nama_kelas.trim() === "") {
       return {
         status: "error",
-        message: "Gagal membuat kelas baru.",
-        error: error.message,
+        message: "Nama kelas tidak valid. Pastikan nama_kelas berupa string dan tidak kosong.",
       };
     }
+
+    // Check if the class name already exists
+    const existingClasses = await this.kelasRepo.getAllKelas();
+    if (existingClasses.some((kelas) => kelas.nama_kelas === nama_kelas)) {
+      return {
+        status: "error",
+        message: `Kelas dengan nama_kelas "${nama_kelas}" sudah ada.`,
+      };
+    }
+
+    // Create the new class
+    const newClass = await this.kelasRepo.createKelas(nama_kelas);
+    return {
+      status: "success",
+      message: "Kelas baru berhasil dibuat.",
+      data: newClass,
+    };
+  } catch (error: any) {
+    console.error("[SERVICE] Error creating Kelas:", error.message);
+    return {
+      status: "error",
+      message: "Gagal membuat kelas baru.",
+      error: error.message,
+    };
   }
+}
+
 
   // Update an existing class
   async updateKelas(id: number, nama_kelas: string): Promise<Response<Kelas>> {
