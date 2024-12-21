@@ -43,7 +43,7 @@ export class SiswaRepository {
         data,
       });
     } catch (error) {
-      throw new Error(`Gagal membuat data siswa: ${(error as Error).message}`);
+      throw new Error(`Gagal membuat data siswa (repo): ${(error as Error).message}`);
     }
   }
 
