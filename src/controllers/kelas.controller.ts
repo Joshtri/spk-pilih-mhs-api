@@ -45,8 +45,8 @@ export class KelasController {
   // Handler to create a new class
   async createKelas(req: Request, res: Response): Promise<Response> {
     try {
-      const { nama } = req.body; // Get 'nama' from request body
-      const result = await this.kelasService.createKelas(nama);
+      const { nama_kelas } = req.body; // Get 'nama_kelas' from request body
+      const result = await this.kelasService.createKelas(nama_kelas);
 
       if (result.status === "error") {
         return res.status(400).json(result); // Return 400 if validation fails
@@ -66,8 +66,8 @@ export class KelasController {
   async updateKelas(req: Request, res: Response): Promise<Response> {
     try {
       const id = parseInt(req.params.id); // Parse ID from URL params
-      const { nama } = req.body; // Get 'nama' from request body
-      const result = await this.kelasService.updateKelas(id, nama);
+      const { nama_kelas } = req.body; // Get 'nama_kelas' from request body
+      const result = await this.kelasService.updateKelas(id, nama_kelas);
 
       if (result.status === "error") {
         return res.status(404).json(result); // Return 404 if not found
