@@ -20,9 +20,9 @@ model Siswa {
 }
 
 model Kelas {
-  id    Int     @id @default(autoincrement())
-  nama_kelas  String  @unique
-  siswa Siswa[]
+  id         Int     @id @default(autoincrement())
+  nama_kelas String  @unique
+  siswa      Siswa[]
 }
 
 enum Role {
@@ -60,12 +60,12 @@ model SubKriteria {
 }
 
 model Penilaian {
-  id         Int      @id @default(autoincrement())
-  siswaId    Int
-  kriteriaId Int
-  nilai      Float
-  siswa      Siswa    @relation(fields: [siswaId], references: [id], onDelete: Cascade)
-  kriteria   Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
+  id             Int      @id @default(autoincrement())
+  siswaId        Int
+  kriteriaId     Int
+  nilai_kriteria Float
+  siswa          Siswa    @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  kriteria       Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
 }
 
 model Hasil {
