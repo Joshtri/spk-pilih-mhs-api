@@ -4,6 +4,7 @@ import cors from 'cors'
 import kelasRoute from './routes/kelas.route';
 import kriteriaRoute from './routes/kriteria.route';
 import siswaRoute from './routes/siswa.route';
+import userRoute from './routes/user.route';
 
 
 
@@ -22,7 +23,7 @@ app.use(cors({
 
 
 
-app.use('/api/v1', kelasRoute, kriteriaRoute, siswaRoute)
+app.use('/api/v1', kelasRoute, kriteriaRoute, siswaRoute, userRoute)
 
 // Basic route to check server status
 app.get('/', (req: Request, res: Response) => {
